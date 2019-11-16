@@ -36,30 +36,27 @@ public class Fish {
         int[][] fileContents = readFile();
         boolean[][] fishMap = decodeArray(fileContents);
 
-        //Output 20 randomly positioned fish on the left side
-        //of the window.
-        for (int i = 0; i < 20; i++) {
-            //Randomise the coordinates of the fish while staying
-            //within the bounds.
-            int[] fishCords = new int[2];
-            double unroundedX = Math.random()*(LEFT_MAX_X-LEFT_MIN_X);
-            fishCords[0] = (int)Math.round(unroundedX + LEFT_MIN_X);
-            double unroundedY = Math.random()*(LEFT_MAX_Y-LEFT_MIN_Y);
-            fishCords[1] = (int)Math.round(unroundedY + LEFT_MIN_Y);
-
-            //Change colour of the fish.
-            randomiseColour(window);
-
-            //Draw the fish.
-            outputBitmap(window, fishMap, fishCords, 1, false);
-        }
+        //output 20 fishes
+        outputFishes(window, fishMap, false);
 
         //draw the big fish.
+        window.setColor(255, 255, 255);
         int[] bigFishLocation = new int[]{150, 1020};
         outputBitmap(window, fishMap, bigFishLocation, 4, true);
+
+        //wait 5 seconds.
+        window.waitSeconds(5);
+
+        //Reset the left side of the screen.
+        window.setColor(0, 30, 10);
+        window.fillRectangle(0, 0, WINDOW_WIDTH/2, WINDOW_HEIGHT);
+
+        //Output the flipped fishes.
+        outputFishes(window, fishMap, true);
     }
 
     //===== Image Output =====
+    //outputs bitmaps that are in the form of 2D boolean arrays.
     private static void outputBitmap(
             EasyGraphics window, boolean[][] map, int[] coords,
             int scaleFactor, boolean flipped){
@@ -96,6 +93,26 @@ public class Fish {
 
         //set the colour code to the EasyGraphics and return it.
         graphicsWindow.setColor(colour[0], colour[1], colour[2]);
+    }
+
+    //Output 20 randomly positioned fish on the left side of the window.
+    private static void outputFishes(
+            EasyGraphics window, boolean[][] fishMap, boolean flipped){
+        for (int i = 0; i < 20; i++) {
+            //Randomise the coordinates of the fish while staying
+            //within the bounds.
+            int[] fishCords = new int[2];
+            double unroundedX = Math.random()*(LEFT_MAX_X-LEFT_MIN_X);
+            fishCords[0] = (int)Math.round(unroundedX + LEFT_MIN_X);
+            double unroundedY = Math.random()*(LEFT_MAX_Y-LEFT_MIN_Y);
+            fishCords[1] = (int)Math.round(unroundedY + LEFT_MIN_Y);
+
+            //Change colour of the fish.
+            randomiseColour(window);
+
+            //Draw the fish.
+            outputBitmap(window, fishMap, fishCords, 1, flipped);
+        }
     }
 
 
