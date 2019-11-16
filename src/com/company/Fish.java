@@ -16,18 +16,44 @@ public class Fish {
     private static final int IMAGE_WIDTH = 134;
     private static final int IMAGE_HEIGHT = 45;
 
+    //Left side of screen limits.
+    private static final int LEFT_MIN_X = 5;
+    private static final int LEFT_MAX_X = 450;
+    private static final int LEFT_MIN_Y = 5;
+    private static final int LEFT_MAX_Y = 450;
+
 
     //===== Main Function =====
     public static void main(String[] args) {
         //Create the window for all of the graphics.
         EasyGraphics window = new EasyGraphics(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+        //Darken the background
+        window.setColor(0, 30, 10);
+        window.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        //Read in all the file and decode it into a bitmap.
         int[][] fileContents = readFile();
         boolean[][] fishMap = decodeArray(fileContents);
 
-        int[] homeCords = new int[]{0, 0};
+        //Output 20 randomly positioned fish on the left side
+        //of the window.
+        window.setColor(255, 255, 255);
+        for (int i = 0; i < 20; i++) {
+            //Randomise the coordinates of the fish while staying
+            //within the bounds.
+            int[] fishCords = new int[2];
+            double unroundedX = Math.random()*(LEFT_MAX_X-LEFT_MIN_X);
+            fishCords[0] = (int)Math.round(unroundedX + LEFT_MIN_X);
+            double unroundedY = Math.random()*(LEFT_MAX_Y-LEFT_MIN_Y);
+            fishCords[1] = (int)Math.round(unroundedY + LEFT_MIN_Y);
 
-        outputBitmap(window, fishMap, homeCords, 1);
+            //Change colour of the fish.
+            randomiseColour(window);
+
+            //Draw the fish.
+            outputBitmap(window, fishMap, fishCords, 1);
+        }
     }
 
     //===== Image Output =====
@@ -41,7 +67,7 @@ public class Fish {
         //corresponding value in the map is true.
         for (int x = 0; x < xDepth; x++) {
             for (int y = 0; y < yDepth; y++) {
-                int ycord = (xDepth*scaleFactor) - (coords[0] + x*scaleFactor);
+                int ycord = (xDepth*scaleFactor) + coords[0] - x*scaleFactor;
                 int xcord = (coords[1] + y*scaleFactor);
                 if(map[x][y]){
                     window.fillRectangle(xcord, ycord, scaleFactor, scaleFactor);
@@ -49,6 +75,18 @@ public class Fish {
             }
 
         }
+    }
+
+    //Randomise colour to a light shade.
+    private static void randomiseColour(EasyGraphics graphicsWindow){
+        //Create a randomised colour code.
+        int[] colour = new int[3];
+        for (int i = 0; i < colour.length; i++) {
+            colour[i] = (int)((Math.random()*127) + 128);
+        }
+
+        //set the colour code to the EasyGraphics and return it.
+        graphicsWindow.setColor(colour[0], colour[1], colour[2]);
     }
 
 
