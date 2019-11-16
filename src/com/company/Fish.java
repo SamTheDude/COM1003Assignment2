@@ -38,7 +38,6 @@ public class Fish {
 
         //Output 20 randomly positioned fish on the left side
         //of the window.
-        window.setColor(255, 255, 255);
         for (int i = 0; i < 20; i++) {
             //Randomise the coordinates of the fish while staying
             //within the bounds.
@@ -52,13 +51,18 @@ public class Fish {
             randomiseColour(window);
 
             //Draw the fish.
-            outputBitmap(window, fishMap, fishCords, 1);
+            outputBitmap(window, fishMap, fishCords, 1, false);
         }
+
+        //draw the big fish.
+        int[] bigFishLocation = new int[]{150, 1020};
+        outputBitmap(window, fishMap, bigFishLocation, 4, true);
     }
 
     //===== Image Output =====
     private static void outputBitmap(
-            EasyGraphics window, boolean[][] map, int[] coords, int scaleFactor){
+            EasyGraphics window, boolean[][] map, int[] coords,
+            int scaleFactor, boolean flipped){
         //work out the dimensions of the map.
         int xDepth = map.length;
         int yDepth = map[0].length;
@@ -67,8 +71,13 @@ public class Fish {
         //corresponding value in the map is true.
         for (int x = 0; x < xDepth; x++) {
             for (int y = 0; y < yDepth; y++) {
-                int ycord = (xDepth*scaleFactor) + coords[0] - x*scaleFactor;
                 int xcord = (coords[1] + y*scaleFactor);
+                int ycord = (xDepth*scaleFactor) + coords[0] - x*scaleFactor;
+                //flips the fish horizontally.
+                if(flipped){
+                    xcord = (yDepth*scaleFactor) + coords[1] - y*scaleFactor;
+                }
+                //Draws a rectangle only if the bitmap is true.
                 if(map[x][y]){
                     window.fillRectangle(xcord, ycord, scaleFactor, scaleFactor);
                 }
